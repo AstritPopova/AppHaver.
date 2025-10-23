@@ -1,22 +1,32 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import './Home.css';
+import React from "react";
+import {
+  IonPage, IonHeader, IonTitle, IonToolbar, IonContent, IonButton
+} from "@ionic/react";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate("/login", { replace: true });
+  };
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Blank</IonTitle>
+          <IonTitle>Welcome Home!</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Blank</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer />
+
+      <IonContent className="ion-padding">
+        <h2>You are logged in ✅</h2>
+        <IonButton expand="block" onClick={handleLogout}>
+          Logout
+        </IonButton>
       </IonContent>
     </IonPage>
   );
