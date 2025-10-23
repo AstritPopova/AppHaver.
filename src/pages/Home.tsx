@@ -23,11 +23,14 @@ const Home: React.FC = () => {
       </IonHeader>
 
       <IonContent className="ion-padding">
-        <h2>You are logged in ✅</h2>
-        <IonButton expand="block" onClick={handleLogout}>
-          Logout
-        </IonButton>
-      </IonContent>
+  <h2>Welcome 👋</h2>
+  <p>Logged in as: <strong>{auth.currentUser?.email}</strong></p>
+
+  <IonButton expand="block" color="medium" onClick={handleLogout}>
+    Logout
+  </IonButton>
+</IonContent>
+
     </IonPage>
   );
 };
