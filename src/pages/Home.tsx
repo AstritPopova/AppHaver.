@@ -1,6 +1,12 @@
 import React from "react";
 import {
-  IonPage, IonHeader, IonTitle, IonToolbar, IonContent, IonButton
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonMenuButton,
+  IonContent,
+  IonButton,
 } from "@ionic/react";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
@@ -15,23 +21,29 @@ const Home: React.FC = () => {
   };
 
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Welcome Home!</IonTitle>
+    <>
+      <IonHeader translucent>
+        <IonToolbar className="glass-header">
+          <IonButtons slot="start">
+            <IonMenuButton menu="mainMenu" />
+          </IonButtons>
+          <IonTitle>AppHaver</IonTitle>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent className="ion-padding">
-  <h2>Welcome 👋</h2>
-  <p>Logged in as: <strong>{auth.currentUser?.email}</strong></p>
+      <IonContent className="forest-bg" fullscreen>
+        <div className="center-wrap">
+          <div className="glass-card">
+            <h2 className="card-title">Welcome 👋</h2>
+            <p>Logged in as: <strong>{auth.currentUser?.email ?? "unknown"}</strong></p>
 
-  <IonButton expand="block" color="medium" onClick={handleLogout}>
-    Logout
-  </IonButton>
-</IonContent>
-
-    </IonPage>
+            <IonButton expand="block" color="medium" onClick={handleLogout} style={{ marginTop: 12 }}>
+              Logout
+            </IonButton>
+          </div>
+        </div>
+      </IonContent>
+    </>
   );
 };
 

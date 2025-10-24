@@ -4,7 +4,7 @@ import App from "./App";
 import { AuthProvider } from "./AuthContext";
 import { setupIonicReact } from "@ionic/react";
 
-/** Ionic perus-CSS */
+/* Ionic perus-CSS */
 import "@ionic/react/css/core.css";
 import "@ionic/react/css/normalize.css";
 import "@ionic/react/css/structure.css";
@@ -15,6 +15,9 @@ import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
+
+/* Omat tyylit */
+import "./styles/auth.css";
 
 setupIonicReact();
 

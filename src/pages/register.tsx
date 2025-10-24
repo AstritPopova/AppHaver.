@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import {
-  IonPage,
   IonHeader,
-  IonTitle,
   IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonMenuButton,
   IonContent,
   IonList,
   IonItem,
@@ -36,16 +37,12 @@ const Register: React.FC = () => {
       setShowToast(true);
       return;
     }
-
     setSubmitting(true);
     try {
       await createUserWithEmailAndPassword(auth, email.trim(), password);
       navigate("/home");
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : "Registration failed. Please try again.";
+      const msg = err instanceof Error ? err.message : "Registration failed. Please try again.";
       setError(msg);
       setShowToast(true);
     } finally {
@@ -54,72 +51,79 @@ const Register: React.FC = () => {
   };
 
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Register</IonTitle>
+    <>
+      <IonHeader translucent>
+        <IonToolbar className="glass-header">
+          <IonButtons slot="start">
+            <IonMenuButton menu="mainMenu" />
+          </IonButtons>
+          <IonTitle>AppHaver</IonTitle>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent className="ion-padding">
-        <IonList inset>
-          <IonItem>
-            <IonLabel position="stacked">Email</IonLabel>
-            <IonInput
-              type="email"
-              value={email}
-              onIonChange={(e) => setEmail(e.detail.value ?? "")}
-              autocomplete="email"
-              enterkeyhint="next"
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="stacked">Password</IonLabel>
-            <IonInput
-              type="password"
-              value={password}
-              onIonChange={(e) => setPassword(e.detail.value ?? "")}
-              autocomplete="new-password"
-              enterkeyhint="done"
-              onKeyUp={(e) => {
-                if (e.key === "Enter") handleRegister();
-              }}
-            />
-          </IonItem>
-        </IonList>
+      <IonContent className="forest-bg" fullscreen>
+        <div className="center-wrap">
+          <div className="glass-card">
+            <h2 className="card-title">Register</h2>
+            <p>Create your account to continue</p>
 
-        {error && !showToast && (
-          <IonText color="danger" style={{ display: "block", marginTop: 8 }}>
-            {error}
-          </IonText>
-        )}
+            <IonList inset>
+              <IonItem lines="inset">
+                <IonLabel position="stacked">Email</IonLabel>
+                <IonInput
+                  type="email"
+                  value={email}
+                  onIonChange={(e) => setEmail(e.detail.value ?? "")}
+                  autocomplete="email"
+                />
+              </IonItem>
 
-        <div style={{ marginTop: 16 }}>
-          <IonButton
-            expand="block"
-            onClick={handleRegister}
-            disabled={submitting}
-          >
-            {submitting ? "Creating..." : "Register"}
-          </IonButton>
+              <IonItem lines="inset">
+                <IonLabel position="stacked">Password</IonLabel>
+                <IonInput
+                  type="password"
+                  value={password}
+                  onIonChange={(e) => setPassword(e.detail.value ?? "")}
+                  autocomplete="new-password"
+                  onKeyUp={(e) => e.key === "Enter" && handleRegister()}
+                />
+              </IonItem>
+            </IonList>
+
+            {error && !showToast && (
+              <IonText color="danger" style={{ display: "block", marginTop: 8 }}>
+                {error}
+              </IonText>
+            )}
+
+            <div style={{ marginTop: 14 }}>
+              <IonButton
+                className="primary-btn"
+                expand="block"
+                onClick={handleRegister}
+                disabled={submitting}
+              >
+                {submitting ? "Creating..." : "Register"}
+              </IonButton>
+            </div>
+
+            <div className="links-row">
+              <Link to="/login">Back to Login</Link>
+              <Link to="/forgot">Forgot password</Link>
+            </div>
+          </div>
         </div>
-
-        <div style={{ textAlign: "center", marginTop: 12 }}>
-          <IonButton fill="clear">
-            <Link to="/login">Back to Login</Link>
-          </IonButton>
-        </div>
-
-        <IonToast
-          isOpen={showToast}
-          message={error}
-          duration={2800}
-          color="danger"
-          position="top"
-          onDidDismiss={() => setShowToast(false)}
-        />
       </IonContent>
-    </IonPage>
+
+      <IonToast
+        isOpen={showToast}
+        message={error}
+        duration={2800}
+        color="danger"
+        position="top"
+        onDidDismiss={() => setShowToast(false)}
+      />
+    </>
   );
 };
 

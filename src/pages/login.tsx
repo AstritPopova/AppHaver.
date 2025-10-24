@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import {
-  IonPage,
   IonHeader,
-  IonTitle,
   IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonMenuButton,
   IonContent,
   IonList,
   IonItem,
@@ -12,14 +13,18 @@ import {
   IonButton,
   IonText,
   IonToast,
+  IonCheckbox,
+  IonIcon,
 } from "@ionic/react";
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { mailOutline, lockClosedOutline } from "ionicons/icons";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { useNavigate, Link } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
   const [showToast, setShowToast] = useState(false);
@@ -36,8 +41,7 @@ const Login: React.FC = () => {
       await signInWithEmailAndPassword(auth, email.trim(), password);
       navigate("/home");
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : "Login failed. Please try again.";
+      const msg = err instanceof Error ? err.message : "Login failed. Please try again.";
       setError(msg);
       setShowToast(true);
     } finally {
@@ -45,95 +49,92 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleResetPassword = async () => {
-    if (!email) {
-      setError("Please enter your email to reset password");
-      setShowToast(true);
-      return;
-    }
-    try {
-      await sendPasswordResetEmail(auth, email.trim());
-      setError("Password reset email sent!");
-      setShowToast(true);
-    } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : "Could not send reset email";
-      setError(msg);
-      setShowToast(true);
-    }
-  };
-
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Login</IonTitle>
+    <>
+      <IonHeader translucent>
+        <IonToolbar className="glass-header">
+          <IonButtons slot="start">
+            <IonMenuButton menu="mainMenu" />
+          </IonButtons>
+          <IonTitle>AppHaver</IonTitle>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent className="ion-padding">
-        <IonList inset>
-          <IonItem>
-            <IonLabel position="stacked">Email</IonLabel>
-            <IonInput
-              type="email"
-              value={email}
-              onIonChange={(e) => setEmail(e.detail.value ?? "")}
-              autocomplete="email"
-              enterkeyhint="next"
-            />
-          </IonItem>
-          <IonItem>
-            <IonLabel position="stacked">Password</IonLabel>
-            <IonInput
-              type="password"
-              value={password}
-              onIonChange={(e) => setPassword(e.detail.value ?? "")}
-              autocomplete="current-password"
-              enterkeyhint="go"
-              onKeyUp={(e) => {
-                if (e.key === "Enter") handleLogin();
-              }}
-            />
-          </IonItem>
-        </IonList>
+      <IonContent className="forest-bg" fullscreen>
+        <div className="center-wrap">
+          <div className="glass-card">
+            <h2 className="card-title">Login</h2>
 
-        {/* mahdollinen tekstivirhe lomakkeen alle */}
-        {error && !showToast && (
-          <IonText color="danger" style={{ display: "block", marginTop: 8 }}>
-            {error}
-          </IonText>
-        )}
+            <IonList inset>
+              <IonItem lines="inset">
+                <IonLabel position="stacked">Email</IonLabel>
+                <IonInput
+                  type="email"
+                  value={email}
+                  onIonChange={(e) => setEmail(e.detail.value ?? "")}
+                  autocomplete="email"
+                />
+                <IonIcon slot="end" icon={mailOutline} />
+              </IonItem>
 
-        <div style={{ marginTop: 16 }}>
-          <IonButton expand="block" onClick={handleLogin} disabled={submitting}>
-            {submitting ? "Logging in..." : "Login"}
-          </IonButton>
+              <IonItem lines="inset">
+                <IonLabel position="stacked">Password</IonLabel>
+                <IonInput
+                  type="password"
+                  value={password}
+                  onIonChange={(e) => setPassword(e.detail.value ?? "")}
+                  autocomplete="current-password"
+                  onKeyUp={(e) => e.key === "Enter" && handleLogin()}
+                />
+                <IonIcon slot="end" icon={lockClosedOutline} />
+              </IonItem>
+            </IonList>
+
+            <div className="remember-row">
+              <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <IonCheckbox
+                  checked={remember}
+                  onIonChange={(e) => setRemember(e.detail.checked)}
+                />
+                <span>Remember me</span>
+              </label>
+              <Link to="/forgot">Forgot Password?</Link>
+            </div>
+
+            {error && !showToast && (
+              <IonText color="danger" style={{ display: "block", marginTop: 8 }}>
+                {error}
+              </IonText>
+            )}
+
+            <div style={{ marginTop: 14 }}>
+              <IonButton
+                className="primary-btn"
+                expand="block"
+                onClick={handleLogin}
+                disabled={submitting}
+              >
+                {submitting ? "Logging in..." : "Login"}
+              </IonButton>
+            </div>
+
+            <div style={{ textAlign: "center", marginTop: 12 }}>
+              <span>Don’t have an account? </span>
+              <Link to="/register">Register</Link>
+            </div>
+          </div>
         </div>
-
-        {/* Forgot password */}
-        <div style={{ textAlign: "center", marginTop: 8 }}>
-          <IonButton fill="clear" color="medium" onClick={handleResetPassword}>
-            Forgot password?
-          </IonButton>
-        </div>
-
-        <div style={{ textAlign: "center", marginTop: 4 }}>
-          <IonButton fill="clear">
-            <Link to="/register">Create an account</Link>
-          </IonButton>
-        </div>
-
-        <IonToast
-          isOpen={showToast}
-          message={error}
-          duration={2800}
-          color="primary"
-          position="top"
-          onDidDismiss={() => setShowToast(false)}
-        />
       </IonContent>
-    </IonPage>
+
+      <IonToast
+        isOpen={showToast}
+        message={error}
+        duration={2800}
+        color="danger"
+        position="top"
+        onDidDismiss={() => setShowToast(false)}
+      />
+    </>
   );
 };
 
