@@ -25,7 +25,6 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <BrowserRouter>
-        {/* Sidemenu (menuId, jotta MenuButton osaa avata tämän) */}
         <IonMenu contentId="main" side="start" menuId="mainMenu">
           <IonHeader>
             <IonToolbar>
