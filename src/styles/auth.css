@@ -1,10 +1,13 @@
 .forest-bg {
+
   --background: url("/images/forest.jpg") center / cover no-repeat fixed;
 }
+
 
 .forest-bg::part(scroll) {
   background: linear-gradient(180deg, rgba(10, 20, 40, 0.15) 0%, rgba(10, 20, 40, 0.05) 30%, transparent 60%);
 }
+
 
 .center-wrap {
   min-height: calc(100vh - 56px);
@@ -13,6 +16,7 @@
   justify-content: center;
   padding: 24px;
 }
+
 
 .glass-card {
   width: min(480px, 92vw);
